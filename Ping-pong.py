@@ -17,8 +17,10 @@ FPS = 360
 clock = time.Clock()
 run = True
 finish = False
-
-
+font.init()
+font1 = font.Font(None, 60)
+loose = font1.render("Player 1 loose :<", True, (255, 200, 10))
+loose2 = font1.render("Player 2 loose :<", True, (255, 200, 10))
 
 
 
@@ -57,10 +59,11 @@ class Player(GameSprite):
 first = (255, 169, 146)
 second = (0, 0, 0)
 
-player = Player("klipartz.com.png", 0, 400, 2, 20, 150)
-player2 = Player("klipartz.com.png", 680, 400, 2, 20, 150)
-ball = GameSprite("pngwing.com.png", 250, 400, 2, 80, 80)
-
+player = Player("klipartz.com.png", 0, 400, 2, 25, 150)
+player2 = Player("klipartz.com.png", 680, 400, 2, 25, 150)
+ball = GameSprite("pngwing.com.png", 250, 400, 1, 80, 80)
+speed_x = 3
+speed_y = 3
 
 while run:  
     for e in event.get():
@@ -68,6 +71,8 @@ while run:
             run = False
             
     if finish != True:
+        ball.rect.x += speed_x
+        ball.rect.y += speed_y
         window.blit(background,(0,0))
         player2.update_l()
         player2.reset()
@@ -76,7 +81,20 @@ while run:
         ball.update()
         ball.reset()
     
+    if ball.rect.y > win_height - 50 or ball.rect.y < 0:
+            speed_y *= -1
+
+    if sprite.collide_rect(player, ball) or sprite.collide_rect(player2, ball):
+        speed_x *= -1
+
+
+    if ball.rect.x < 0:
+        finish = True
+        window.blit(loose, (200,200))
     
+    if ball.rect.x > 630:
+        finish = True
+        window.blit(loose2, (200,200))
     
     
     display.update()
